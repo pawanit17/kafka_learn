@@ -45,7 +45,29 @@ Ex:
 - If you connect to one Kafka broker, it takes care of the entire connections.
 - Typically 3, 100s of borkers is also not uncommon.
 
+## Replication
+- If you have two topics each of which has two partitions and if you have three brokers, then it may look as follows.
+- So even if one of them goes down, the brokers would still be able to serve the requests.
+![image](https://user-images.githubusercontent.com/42272776/113506038-f3399100-955f-11eb-827b-2f0c3f07a1ab.png)
+- Each partition has one leader and multiple ISR ( in-sync replica ).
+- Zookeeper will arbitrate leadership.
 
+## Producer
+- Producers write data to topics ( which is made of partitions )
+- Producers automaticalyl know to which broker and parition to write to
+- In case of Broker failures, Producers will automatically recover
+- If the key is not used, then the data is sent to each Broker of a topic in round robin mode.
+- Producer can be configured to use one of the three modes of acknowledgements
+- acks 0 - Producers wont wait for acknowledgement ( possible data loss )
+- acks 1 - Producers will wait for leader acknowledgement ( limited data loss )
+- acks 2 - Leaaders and replicas acknowledgement ( no data loss )
+
+
+
+![Kafka](https://user-images.githubusercontent.com/42272776/113506303-98a13480-9561-11eb-917d-b5bc9f0fe1a4.jpg)
+ 
+
+- 
 
 # Next steps
 - Kafka Connect
