@@ -74,10 +74,10 @@ Ex:
 ## Consumers and Consumer Groups
 <TODO: Read this again to get clarity>
 ## Consumer Offsets
-- Kafka stores the offsets at which a consumer group has been reading.
+- Kafka stores `s at which a consumer group has been reading.
 - These are comitted to a Kafka topic named **__consumer_offers**
 - When a consumer in a consumer group has processed data recevied from Kafka, it should be committing the offsets.
-[Consumer Offsets_1](https://user-images.githubusercontent.com/42272776/113508054-7c09fa00-956b-11eb-94aa-548253c4f3a7.jpg)
+![Consumer Offsets_1](https://user-images.githubusercontent.com/42272776/113508092-b6739700-956b-11eb-9cf4-7ec4574f3db1.jpg)
 - There are three delivery semantics for consumers
   - At most once
     - Offsets are comitted as soon as message is received.
