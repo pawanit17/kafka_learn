@@ -114,9 +114,11 @@ This is helpfuls when the consumer does not respond.
 - With a replication factor N, producer and consumers can tolerate up to N-1 brokers being down.
 - As long as the number of partitions remains constant for a topic ( no new partitions ), the same key will always go to the same partition.
 
-
 ![Kafka](https://user-images.githubusercontent.com/42272776/113506303-98a13480-9561-11eb-917d-b5bc9f0fe1a4.jpg)
  
+# Working with Kafka
+- zookeeper-server-start.bat config\zookeeper.properties
+- kafka_2.13-2.7.0>kafka-server-start.bat config\server.properties
 
 - 
 
