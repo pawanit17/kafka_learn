@@ -173,6 +173,9 @@ All the messages along with the ones that are yet to arrive.
 *D:\Development\kafka\kafka_2.13-2.7.0>kafka-console-consumer --bootstrap-server 127.0.0.1:9092 --topic first_topic --group second-application-group*
 
 - If a consumer has processed the messages from the producer, then if that consumer restarts then messages that are transmitted by the producer during the down time along will show up to the consumer. This is because of consumer offsetting.
+  - This behavior can be changed via --reset-offsets on kafka-consumer-groups.
+  - *kafka-consumer-groups --bootstrap-server localhost:9902 --describe --group first-application-group --reset-offsets --to-earliest --execute --topic first_topic*
+  - The above command will re-read every message sent to that topic.
 
 - Listing the kafka consumer groups.
 *D:\Development\kafka\kafka_2.13-2.7.0>kafka-consumer-groups --bootstrap-server localhost:9092 --list
