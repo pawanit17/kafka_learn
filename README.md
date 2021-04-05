@@ -116,14 +116,74 @@ This is helpfuls when the consumer does not respond.
 
 ![Kafka](https://user-images.githubusercontent.com/42272776/113506303-98a13480-9561-11eb-917d-b5bc9f0fe1a4.jpg)
  
-# Working with Kafka
+# Kafka Hands on
+
+## Startup
 - zookeeper-server-start.bat config\zookeeper.properties
 - kafka_2.13-2.7.0>kafka-server-start.bat config\server.properties
 
+## kafka-topics.bat
+### Create Topics
+D:\Development\kafka\kafka_2.13-2.7.0>kafka-topics --zookeeper 127.0.0.1:2181 --topic first_topic --create --partitions 3 --replication-factor 1
+WARNING: Due to limitations in metric names, topics with a period ('.') or underscore ('_') could collide. To avoid issues it is best to use either, but not both.
+Created topic first_topic.
+
+### List Topics
+D:\Development\kafka\kafka_2.13-2.7.0>kafka-topics --zookeeper 127.0.0.1:2181 --list
+first_topic
+
+### Describe Topics
+D:\Development\kafka\kafka_2.13-2.7.0>kafka-topics --zookeeper 127.0.0.1:2181 --topic first_topic --describe
+Topic: first_topic      PartitionCount: 3       ReplicationFactor: 1    Configs:
+        Topic: first_topic      Partition: 0    Leader: 0       Replicas: 0     Isr: 0
+        Topic: first_topic      Partition: 1    Leader: 0       Replicas: 0     Isr: 0
+        Topic: first_topic      Partition: 2    Leader: 0       Replicas: 0     Isr: 0
 - 
+
+## kafka-console-producer.bat
+### Create topic
+D:\Development\kafka\kafka_2.13-2.7.0>kafka-console-producer --bootstrap-server 127.0.0.1:9092 -topic first_topic
+>hello pavan
+>execute order 676
+>message complete
+>Terminate batch job (Y/N)? y
+>
+
+### Adding properties to producer
+D:\Development\kafka\kafka_2.13-2.7.0>kafka-console-producer --bootstrap-server 127.0.0.1:9092 -topic first_topic --producer-property acks=all
+>hello kakarot
+>Terminate batch job (Y/N)? y
+>
+- Generally, you should add messages to a topic after the topic is created. Otherwise the created topic may take some default configurations which are not desired.
+
+### Getting data from Producer
+D:\Development\kafka\kafka_2.13-2.7.0>kafka-console-consumer --bootstrap-server 127.0.0.1:9092 --topic first_topic
+
+D:\Development\kafka\kafka_2.13-2.7.0>kafka-console-consumer --bootstrap-server 127.0.0.1:9092 --topic first_topic --from-beginning
+All the messages along with the ones that are yet to arrive.
+
+### Consumer Groups
+- The below command configures the consumer as being part of the specified group.
+*D:\Development\kafka\kafka_2.13-2.7.0>kafka-console-consumer --bootstrap-server 127.0.0.1:9092 --topic first_topic --group first-application-group*
+
+- If there are two different consumers for the same consumer group, then the messages from the producer for that topic are distributed between them
+*D:\Development\kafka\kafka_2.13-2.7.0>kafka-console-consumer --bootstrap-server 127.0.0.1:9092 --topic first_topic --group first-application-group*
+*D:\Development\kafka\kafka_2.13-2.7.0>kafka-console-consumer --bootstrap-server 127.0.0.1:9092 --topic first_topic --group first-application-group*
+
+- If there are two different consumer for two different consumer groups, then both of them receive the meesages.
+*D:\Development\kafka\kafka_2.13-2.7.0>kafka-console-consumer --bootstrap-server 127.0.0.1:9092 --topic first_topic --group first-application-group*
+*D:\Development\kafka\kafka_2.13-2.7.0>kafka-console-consumer --bootstrap-server 127.0.0.1:9092 --topic first_topic --group second-application-group*
+
+- If a consumer has processed the messages from the producer, then if that consumer restarts then messages that are transmitted by the producer during the down time along will show up to the consumer. This is because of consumer offsetting.
 
 # Next steps
 - Kafka Connect
 - Kafka Streams
 - Confluent Schema Registry
+
+
+# Questions
+- What are consumer groups
+- Partitions, offsets, messages - how are they stored in a practical example
+- 
 
