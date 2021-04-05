@@ -97,7 +97,6 @@ This is helpfuls when the consumer does not respond.
 - So if you connect to one broker you are connected to all the bokers, topics and partitions.
 ![Kafka Broker Discovery](https://user-images.githubusercontent.com/42272776/113508067-8c21d980-956b-11eb-9739-ff8b668849a9.jpg)
 
-
 ## Zookeeper
 - Keeps the list of brokers
 - Leader election
@@ -106,7 +105,6 @@ This is helpfuls when the consumer does not respond.
 - By design, operates with odd number of servers - 3, 5, 7..
 - Zookeeper has a leader ( handle writes ) the rest of the servers are followers ( handle reads ).
 ![image](https://user-images.githubusercontent.com/42272776/113507326-5e3a9600-9567-11eb-973d-8864c8c8f7b3.png)
-
 
 ## Kafka Guarantees
 - Messages are appended to a topic-partition in the order they are sent.
@@ -175,6 +173,52 @@ All the messages along with the ones that are yet to arrive.
 *D:\Development\kafka\kafka_2.13-2.7.0>kafka-console-consumer --bootstrap-server 127.0.0.1:9092 --topic first_topic --group second-application-group*
 
 - If a consumer has processed the messages from the producer, then if that consumer restarts then messages that are transmitted by the producer during the down time along will show up to the consumer. This is because of consumer offsetting.
+
+- Listing the kafka consumer groups.
+*D:\Development\kafka\kafka_2.13-2.7.0>kafka-consumer-groups --bootstrap-server localhost:9092 --list
+first-application-group*
+
+- Describing the group
+  - A LAG of 0 indicates that there are no outstanding messages.
+*D:\Development\kafka\kafka_2.13-2.7.0>kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group first-application-group*
+
+GROUP                   TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID                                                             HOST            CLIENT-ID
+first-application-group first_topic     0          5               5               0               consumer-first-application-group-1-b106e076-d29a-4fb4-a8fa-63bb3fd3d5f9 /172.26.16.1    consumer-first-application-group-1
+first-application-group first_topic     1          6               6               0               consumer-first-application-group-1-b106e076-d29a-4fb4-a8fa-63bb3fd3d5f9 /172.26.16.1    consumer-first-application-group-1
+first-application-group first_topic     2          6               6               0               consumer-first-application-group-1-b106e076-d29a-4fb4-a8fa-63bb3fd3d5f9 /172.26.16.1    consumer-first-application-group-1
+
+   - Bring the consumer down and then push few messages from the producers onto the topic.
+   - You will notice that there is a warning that there are no active members.
+   - That there is a LAG now.
+
+*D:\Development\kafka\kafka_2.13-2.7.0>kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group first-application-group*
+
+Consumer group 'first-application-group' has no active members.
+
+GROUP                   TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID     HOST            CLIENT-ID
+first-application-group first_topic     0          5               6               1               -               -               -
+first-application-group first_topic     1          6               7               1               -               -               -
+first-application-group first_topic     2          6               7               1               -               -               -
+
+   - And when you restart the consumer group once again, those outstanding messages would be received. 
+
+*D:\Development\kafka\kafka_2.13-2.7.0>kafka-console-consumer --bootstrap-server localhost:9092 --topic first_topic --group first-application-group*
+spiruta sancti
+icfilia
+ignomina padre
+Processed a total of 3 messages
+Terminate batch job (Y/N)? y
+
+*D:\Development\kafka\kafka_2.13-2.7.0>kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group first-application-group*
+
+Consumer group 'first-application-group' has no active members.
+
+GROUP                   TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID     HOST            CLIENT-ID
+first-application-group first_topic     0          6               6               0               -               -               -
+first-application-group first_topic     1          7               7               0               -               -               -
+first-application-group first_topic     2          7               7               0               -               -               -
+
+
 
 # Next steps
 - Kafka Connect
